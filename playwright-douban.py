@@ -2,7 +2,7 @@ import asyncio
 import random
 from playwright.async_api import async_playwright,Browser
 
-PAGE_COUNT = 2   #翻页数量
+PAGE_COUNT = 10   #翻页数量
 SEARCH_KEY = '单间'
 GROUP_HOME = [
   "https://www.douban.com/group/nanshanzufang/discussion",# 南山租房
@@ -30,7 +30,7 @@ async def douban_group(browser: Browser, url):
 
     page = await browser.new_page()
 
-    await page.wait_for_timeout(random.randint(1,10))
+    await page.wait_for_timeout(random.randint(1,10) * 1000)
     # 访问豆瓣小组页面
     await page.goto(url)
 
@@ -43,12 +43,12 @@ async def douban_group(browser: Browser, url):
             post_list = await temp.query_selector_all('tr')
             await deal_page(post_list)
 
-            await page.wait_for_timeout(10*1000)
+            await page.wait_for_timeout(random.randint(5,10) * 1000)
             await page.click('.next')
     except Exception as e:
         print("Error:",e)
 
-    with open('douban-{}.json'.format(group_key),'a',encoding='utf-8') as f:
+    with open('douban-{}.json'.format(group_key),'w',encoding='utf-8') as f:
         for k in result:
           f.writelines([result[k],'\n'])
 
